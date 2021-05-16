@@ -81,7 +81,7 @@ func (cc *CalendarConfig) getLunarByBetween(bd *BaseDate) BaseDate {
 
 //通过间隔天数查找农历日期
 func (cc *CalendarConfig) getLunarDateByBetween(lunarYear int, days int) BaseDate {
-	yearDays, monthDays := cc.getLunarYearDays(lunarYear, days)
+	yearDays, monthDays := cc.getLunarYearDays(lunarYear)
 	var end, tempDays, month int
 	if days > 0 {
 		end = days
@@ -105,7 +105,7 @@ func (cc *CalendarConfig) getLunarDateByBetween(lunarYear int, days int) BaseDat
 }
 
 //获取农历年份一年的每月的天数及一年的总天数
-func (cc *CalendarConfig) getLunarYearDays(lunarYear int, days int) (yearDays int, monthDays []int) {
+func (cc *CalendarConfig) getLunarYearDays(lunarYear int) (yearDays int, monthDays []int) {
 	yearData := cc.LunarInfo[lunarYear-cc.MinYear]
 	//闰月所在月 0为没有
 	leapMonth := yearData[0]
@@ -150,7 +150,7 @@ func (cc *CalendarConfig) SolarToLunar(bd *BaseDate) (BaseDate, error) {
 
 //公历某月日历
 //fill 是否用上下月数据补齐首尾空缺，首例数据从周日开始
-func (cc *CalendarConfig) SolarCalendar(bd *BaseDate, fill bool) (MonthInfo, error) {
+func (cc *CalendarConfig) SolarCalendar(bd *BaseDate) (MonthInfo, error) {
 	bd, err := cc.formatDate(bd)
 	if err != nil {
 		return MonthInfo{}, errors.New("date format error: " + err.Error())
