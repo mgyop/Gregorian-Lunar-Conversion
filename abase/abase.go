@@ -2,15 +2,12 @@ package abase
 
 import (
 	"errors"
-	"fmt"
 	"github.com/imroc/biu"
-	"github.com/patrickmn/go-cache"
 	"strings"
 	"time"
 )
 
 type CalendarConfig struct {
-	cache                                                              *cache.Cache
 	MinYear, MaxYear                                                   int
 	HeavenlyStems, EarthlyBranches, Zodiac, SolarTerm, MonthCn, DateCn []string
 	LunarFestival                                                      map[string]string
@@ -19,20 +16,8 @@ type CalendarConfig struct {
 
 func Init() CalendarConfig {
 	var cc CalendarConfig
-	//实例化缓存
-	cc.cache = cache.New(10*time.Minute, 20*time.Minute)
-
 	cc.MinYear = 1890
 	cc.MaxYear = 2100
-	heavenlyStems := []string{"甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"} //天干
-	cc.HeavenlyStems = heavenlyStems
-	earthlyBranches := []string{"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"} //地支
-	cc.EarthlyBranches = earthlyBranches
-	Zodiac := []string{"鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"} //对应地支十二生肖
-	cc.Zodiac = Zodiac
-	//二十四节气
-	SolarTerm := []string{"小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"}
-	cc.SolarTerm = SolarTerm
 	MonthCn := []string{"正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"}
 	cc.MonthCn = MonthCn
 	DateCn := []string{"初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十", "卅一"}
@@ -192,18 +177,5 @@ func (cc *CalendarConfig) SolarCalendar(bd *BaseDate, fill bool) MonthInfo {
 	monthInfo.WeekOf1st = int(date.Weekday())
 	monthInfo.MonthDays = int((nextDate.Unix() - date.Unix()) / 86400)
 	monthInfo.DayInfo = cc.creatMonthInfo(bd, monthInfo.MonthDays)
-	fmt.Println(date)
-	fmt.Println(nextDate)
-	fmt.Println(monthInfo)
 	return monthInfo
-
 }
-
-//func (cc *CalendarConfig) Calendar (year int, month int, fill bool)  {
-//	fmt.Println(cc.MinYear)
-//}
-//func (cc *CalendarConfig) Formatter (year int, month int, fill bool) map[string]int  {
-//	return map[string]int{
-//		"a": 1,
-//	}
-//}
