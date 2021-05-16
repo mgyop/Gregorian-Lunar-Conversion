@@ -18,26 +18,12 @@ func Init() CalendarConfig {
 	var cc CalendarConfig
 	cc.MinYear = 1890
 	cc.MaxYear = 2100
+	//格式化农历时间月
 	MonthCn := []string{"正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"}
 	cc.MonthCn = MonthCn
+	//格式化农历时间天
 	DateCn := []string{"初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十", "卅一"}
 	cc.DateCn = DateCn
-	//农历节日
-	lunarFestival := map[string]string{
-		"d0101": "春节",
-		"d0115": "元宵节",
-		"d0202": "龙抬头节",
-		"d0323": "妈祖生辰",
-		"d0505": "端午节",
-		"d0707": "七夕情人节",
-		"d0715": "中元节",
-		"d0815": "中秋节",
-		"d0909": "重阳节",
-		"d1015": "下元节",
-		"d1208": "腊八节",
-		"d1223": "小年",
-		"d0100": "除夕"}
-	cc.LunarFestival = lunarFestival
 	//初始化农历数据
 	InitLunarInfo(&cc)
 	return cc
@@ -154,21 +140,21 @@ func (cc *CalendarConfig) getDaysBetweenSolar(bdTarget, bdSource *BaseDate) int 
 
 //将公历转换为农历
 //month 从0开始 显示需要 +1
-func (cc *CalendarConfig) SolarToLunar(bd *BaseDate) BaseDate {
+func (cc *CalendarConfig) SolarToLunar(bd *BaseDate) (BaseDate, error) {
 	bd, err := cc.formatDate(bd)
 	if err != nil {
-		panic(err)
+		return BaseDate{}, errors.New("date format error: " + err.Error())
 	}
 	bdResult := cc.getLunarByBetween(bd)
-	return bdResult
+	return bdResult, nil
 }
 
 //公历某月日历
 //fill 是否用上下月数据补齐首尾空缺，首例数据从周日开始
-func (cc *CalendarConfig) SolarCalendar(bd *BaseDate, fill bool) MonthInfo {
+func (cc *CalendarConfig) SolarCalendar(bd *BaseDate, fill bool) (MonthInfo, error) {
 	bd, err := cc.formatDate(bd)
 	if err != nil {
-		panic(err)
+		return MonthInfo{}, errors.New("date format error: " + err.Error())
 	}
 	date := time.Date(bd.Year, bd.Month, 1, 0, 0, 0, 0, time.Local)
 	nextDate := date.AddDate(0, 1, 0)
@@ -177,5 +163,5 @@ func (cc *CalendarConfig) SolarCalendar(bd *BaseDate, fill bool) MonthInfo {
 	monthInfo.WeekOf1st = int(date.Weekday())
 	monthInfo.MonthDays = int((nextDate.Unix() - date.Unix()) / 86400)
 	monthInfo.DayInfo = cc.creatMonthInfo(bd, monthInfo.MonthDays)
-	return monthInfo
+	return monthInfo, nil
 }

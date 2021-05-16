@@ -2,6 +2,7 @@ package main
 
 import (
 	"Gregorian-Lunar-Conversion/abase"
+	"fmt"
 	"time"
 )
 
@@ -13,6 +14,9 @@ func main() {
 		Month: now.Month(),
 		Day:   now.Day(),
 	}
-	LunarDate := calendarConfig.SolarToLunar(&bd)
-	println(LunarDate.String())
+	LunarDate, err := calendarConfig.SolarToLunar(&bd)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println(LunarDate.String())
 }
