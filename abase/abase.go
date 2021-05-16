@@ -2,7 +2,8 @@ package abase
 
 import (
 	"errors"
-	"github.com/imroc/biu"
+	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -108,11 +109,9 @@ func (cc *CalendarConfig) getLunarYearDays(lunarYear int, days int) (yearDays in
 	yearData := cc.LunarInfo[lunarYear-cc.MinYear]
 	//闰月所在月 0为没有
 	leapMonth := yearData[0]
-	monthData := biu.ToBinaryString(yearData[3]) //转为二进制
-	monthData = monthData[1 : len(monthData)-1]
-	bytes := strings.Split(monthData, " ")
-	monthData = bytes[len(bytes)-2] + bytes[len(bytes)-1]
-	monthDataArr := strings.Split(monthData, "")
+	formatInt := strconv.FormatInt(int64(yearData[3]), 2)
+	formatIntString := fmt.Sprintf("%016s", formatInt)
+	monthDataArr := strings.Split(formatIntString, "")
 	yearMonth := 12
 	if leapMonth > 0 {
 		yearMonth = 13

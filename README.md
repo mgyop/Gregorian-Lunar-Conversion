@@ -1,7 +1,11 @@
 # Gregorian-Lunar-Conversion
 
-Gregorian-Lunar Conversion
-
+阳历转阴历
+####安装
+````bigquery
+go get github.com/mgyop/Gregorian-Lunar-Conversion
+````
+####示例
 ````
 func main() {
     ##初始化配置
